@@ -14,6 +14,8 @@ const db = require('./config/database');
 
 db.connect();
 
+const Place = require('./models/Place');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -34,6 +36,33 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+app.get('/places', (req, res) => {
+	Place.find({})
+		.then(doc => {
+			res.json(doc);
+			console.log(doc);
+		})
+		.catch(err => {
+			res.json(err);
+			console.error(err);
+		});
+});
+
+app.post('/places', (req, res) => {
+	Place.create({
+		place: req.body.place,
+		description: req.body.description
+	})
+		.then(doc => {
+			res.json(doc);
+			console.log(doc);
+		})
+		.catch(err => {
+			res.json(err);
+			console.error(err);
+		});
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
